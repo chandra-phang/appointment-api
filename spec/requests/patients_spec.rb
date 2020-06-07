@@ -47,7 +47,7 @@ RSpec.describe 'Patient API', type: :request do
   describe 'POST /patients' do
     let(:valid_attributes) do
       {
-        name: 'Tony', email: 'tony@gmail.com', role: "patient",
+        name: 'Tony', email: 'tony@gmail.com', role: "patient", password: "foo",
         gender: "male", date_of_birth: Time.zone.now.to_date
       }
     end
@@ -65,7 +65,7 @@ RSpec.describe 'Patient API', type: :request do
     end
 
     context 'when the request is invalid' do
-      before { post '/patients', params: { name: 'Tony' } }
+      before { post '/patients', params: valid_attributes.slice!(:email) }
 
       it 'returns status code 422' do
         expect(response).to have_http_status(422)

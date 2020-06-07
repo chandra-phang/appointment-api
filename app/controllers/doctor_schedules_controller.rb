@@ -1,5 +1,4 @@
 class DoctorSchedulesController < ApplicationController
-  # before_action :authenticate_user!
   before_action :set_doctor
   before_action :set_doctor_schedule, only: [:show, :update, :destroy]
 

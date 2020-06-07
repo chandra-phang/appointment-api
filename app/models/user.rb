@@ -1,4 +1,7 @@
 class User < ApplicationRecord
+# encrypt password
+  has_secure_password
+
   enum state: StringEnum["active", "deleted"]
   enum role: StringEnum["doctor", "patient"]
   enum gender: StringEnum["male", "female"]
@@ -9,13 +12,7 @@ class User < ApplicationRecord
   has_many :patient_appointments, class_name: "Appointment", foreign_key: "patient_id"
   has_many :doctor_appointments, class_name: "Appointment", foreign_key: "doctor_id"
 
-  validates_presence_of :name, :email
+  validates_presence_of :name, :email, :password_digest
+  # validates_format_of :email, with:  /\A([^@\s]+)@((?:[-a-z0-9]+\.)+[a-z]{2,})\z/
   validates_date :date_of_birth, allow_nil: true
-
-  def generate_jwt
-    JWT.encode(
-      { id: id, exp: 60.days.from_now.to_i },
-      Rails.application.secrets.secret_key_base
-    )
-  end
 end

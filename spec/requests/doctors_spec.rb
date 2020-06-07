@@ -3,9 +3,10 @@ require 'rails_helper'
 RSpec.describe 'Doctor API', type: :request do
   let!(:users) { create_list(:user, 10) }
   let(:user_id) { users.first.id }
+  let(:headers) { valid_headers }
 
   describe 'GET /doctors' do
-    before { get '/doctors' }
+    before { get '/doctors', headers: headers }
 
     it 'returns users' do
       expect(json).not_to be_empty
@@ -19,7 +20,7 @@ RSpec.describe 'Doctor API', type: :request do
 
   describe 'GET /doctors/:id' do
     context 'when the record exists' do
-      before { get "/doctors/#{user_id}" }
+      before { get "/doctors/#{user_id}", headers: headers }
 
       it 'returns the user' do
         expect(json).not_to be_empty
@@ -32,7 +33,7 @@ RSpec.describe 'Doctor API', type: :request do
     end
 
     context 'when the record does not exist' do
-      before { get "/doctors/#{9999}" }
+      before { get "/doctors/#{9999}", headers: headers }
 
       it 'returns status code 404' do
         expect(response).to have_http_status(404)
@@ -47,13 +48,13 @@ RSpec.describe 'Doctor API', type: :request do
   describe 'POST /doctors' do
     let(:valid_attributes) do
       {
-        name: 'Tony', email: 'tony@gmail.com', role: "patient",
+        name: 'Tony', email: 'tony@gmail.com', role: "patient", password: "foo",
         gender: "male", date_of_birth: Time.zone.now.to_date
       }
     end
 
     context 'when the request is valid' do
-      before { post '/doctors', params: valid_attributes }
+      before { post '/doctors', params: valid_attributes, headers: headers }
 
       it 'creates a user' do
         expect(json['name']).to eq('Tony')
@@ -65,7 +66,7 @@ RSpec.describe 'Doctor API', type: :request do
     end
 
     context 'when the request is invalid' do
-      before { post '/doctors', params: { name: 'Tony' } }
+      before { post '/doctors', params: valid_attributes.slice!(:email), headers: headers }
 
       it 'returns status code 422' do
         expect(response).to have_http_status(422)
@@ -82,7 +83,7 @@ RSpec.describe 'Doctor API', type: :request do
     let(:valid_attributes) { { name: 'Peter' } }
 
     context 'when the record exists' do
-      before { put "/doctors/#{user_id}", params: valid_attributes }
+      before { put "/doctors/#{user_id}", params: valid_attributes, headers: headers }
 
       it 'updates the record' do
         expect(response.body).to be_empty
@@ -95,7 +96,7 @@ RSpec.describe 'Doctor API', type: :request do
   end
 
   describe 'DELETE /doctors/:id' do
-    before { delete "/doctors/#{user_id}" }
+    before { delete "/doctors/#{user_id}", headers: headers }
 
     it 'returns status code 204' do
       expect(response).to have_http_status(204)

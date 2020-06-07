@@ -1,33 +1,35 @@
 class UsersController < ApplicationController
-  # before_action :authenticate_user!
+  skip_before_action :authorize_request, only: :create
   before_action :set_user, only: [:show, :update, :destroy]
 
   def index
-    @users = User.active.all
-    json_response(@users)
+    users = User.active.all
+    json_response(users)
   end
 
   def show
-    json_response(@user)
+    json_response(current_user)
   end
 
   def create
-    @user = User.create!(user_params)
-    @user.update(state: :active)
-    if user_params[:hostpital_id] && @user.doctor?
+    user = User.create!(user_params)
+    user.update(state: :active)
+    if user_params[:hostpital_id] && user.doctor?
       hospital = Hospital.find(user_params[:hostpital_id])
-      @user.hospital_affiliations.create(hospital: hospital)
+      user.hospital_affiliations.create(hospital: hospital)
     end
-    json_response(@user, :created)
+    auth_token = AuthenticateUser.new(user.email, user.password).call
+    response = { message: Message.account_created, auth_token: auth_token }
+    json_response(response, :created)
   end
 
   def update
-    @user.update(user_params)
+    current_user.update(user_params)
     head :no_content
   end
 
   def destroy
-    @user.update(state: :deleted)
+    current_user.update(state: :deleted)
     head :no_content
   end
 
@@ -38,7 +40,10 @@ class UsersController < ApplicationController
   end
 
   def user_params
-    params.permit(:name, :email, :password, :role, :gender, :date_of_birth, :hostpital_id)
+    params.permit(
+      :name, :email, :password, :password_confirmation,
+      :role, :gender, :date_of_birth, :hostpital_id
+    )
   end
 
   def set_user

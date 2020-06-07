@@ -7,7 +7,7 @@ class CreateUsers < ActiveRecord::Migration[5.2]
       t.string :state
       t.string :gender
       t.date :date_of_birth
-      t.string :encrypted_password, null: false, default: ""
+      t.string :password_digest, null: false, default: ""
       t.text :tokens
 
       t.timestamps null: false
