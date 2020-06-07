@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe 'User API', type: :request do
+RSpec.describe 'Patient API', type: :request do
   let!(:users) { create_list(:user, 10, role: "patient") }
   let(:user_id) { users.first.id }
 

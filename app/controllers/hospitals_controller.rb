@@ -3,27 +3,27 @@ class HospitalsController < ApplicationController
   before_action :set_hospitals, only: [:show, :update, :destroy]
 
   def index
-    @hospitalss = Hospital.active.all
-    json_response(@hospitalss)
+    hospitals = Hospital.active.all
+    json_response(hospitals)
   end
 
   def show
-    json_response(@hospitals)
+    json_response(@hospital)
   end
 
   def create
-    @hospitals = Hospital.create!(hospital_params)
-    @hospitals.update(state: "active")
-    json_response(@hospitals, :created)
+    hospital = Hospital.create!(hospital_params)
+    hospital.update(state: "active")
+    json_response(hospital, :created)
   end
 
   def update
-    @hospitals.update(hospital_params)
+    @hospital.update(hospital_params)
     head :no_content
   end
 
   def destroy
-    @hospitals.update(state: :deleted)
+    @hospital.update(state: :deleted)
     head :no_content
   end
 
@@ -34,6 +34,6 @@ class HospitalsController < ApplicationController
   end
 
   def set_hospitals
-    @hospitals = Hospital.find_by!(id: params[:id], state: :active)
+    @hospital = Hospital.find_by!(id: params[:id], state: :active)
   end
 end
