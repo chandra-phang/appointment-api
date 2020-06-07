@@ -1,24 +1,31 @@
-# README
+# Appointment API
 
-This README would normally document whatever steps are necessary to get the
-application up and running.
+Appointment API is application for medical consultation management.
 
-Things you may want to cover:
+## Setup
+1. Install Gem
 
-* Ruby version
+```bash
+bundle install
+```
 
-* System dependencies
+2. Create database and perform migration
 
-* Configuration
+```bash
+rails db:create && rails db:migrate
+```
 
-* Database creation
+3. To run the test, type `rspec` to your command line
+```bash
+rspec
+```
 
-* Database initialization
+## Start server
 
-* How to run the test suite
+```bash
+rails s
+```
 
-* Services (job queues, cache servers, search engines, etc.)
+## Ruby Version
 
-* Deployment instructions
-
-* ...
+`2.6.3`
