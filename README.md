@@ -15,6 +15,12 @@ bundle install
 rails db:create && rails db:migrate
 ```
 
+4. Seed data (Optional)
+
+```bash
+rails db:seed
+```
+
 3. To run the test, type `rspec` to your command line
 ```bash
 rspec
