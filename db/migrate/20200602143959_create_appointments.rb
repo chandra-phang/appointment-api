@@ -10,7 +10,6 @@ class CreateAppointments < ActiveRecord::Migration[5.2]
       t.timestamps
     end
 
-    add_index :appointments, [:hospital_id, :doctor_id, :patient_id], unique: true
     add_foreign_key :appointments, :hospitals
     add_foreign_key :appointments, :users, column: :doctor_id
     add_foreign_key :appointments, :users, column: :patient_id

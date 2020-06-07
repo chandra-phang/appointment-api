@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe 'User API', type: :request do
+RSpec.describe 'Doctor API', type: :request do
   let!(:users) { create_list(:user, 10) }
   let(:user_id) { users.first.id }
 
@@ -18,9 +18,9 @@ RSpec.describe 'User API', type: :request do
   end
 
   describe 'GET /doctors/:id' do
-    before { get "/doctors/#{user_id}" }
-
     context 'when the record exists' do
+      before { get "/doctors/#{user_id}" }
+
       it 'returns the user' do
         expect(json).not_to be_empty
         expect(json['id']).to eq(user_id)
@@ -32,7 +32,7 @@ RSpec.describe 'User API', type: :request do
     end
 
     context 'when the record does not exist' do
-      let(:user_id) { 100 }
+      before { get "/doctors/#{9999}" }
 
       it 'returns status code 404' do
         expect(response).to have_http_status(404)

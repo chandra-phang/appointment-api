@@ -4,4 +4,5 @@ Rails.application.routes.draw do
   end
   resources :patients, controller: :users, defaults: { role: :patient }
   resources :hospitals
+  resources :appointments
 end

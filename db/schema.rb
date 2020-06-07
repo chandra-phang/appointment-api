@@ -23,7 +23,6 @@ ActiveRecord::Schema.define(version: 2020_06_02_144610) do
     t.string "end_at"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["hospital_id", "doctor_id", "patient_id"], name: "index_appointments_on_hospital_id_and_doctor_id_and_patient_id", unique: true
   end
 
   create_table "doctor_schedules", force: :cascade do |t|

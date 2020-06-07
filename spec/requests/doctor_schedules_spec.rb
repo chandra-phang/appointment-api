@@ -1,13 +1,12 @@
 require 'rails_helper'
 
-RSpec.describe 'Items API' do
+RSpec.describe 'Doctor API' do
   let!(:doctor) { create(:user) }
   let(:doctor_id) { doctor.id }
   let!(:hospital) { create(:hospital) }
-  let(:hospital_id) { hospital.id }
   let!(:schedule) do
     DoctorSchedule.create(
-      doctor_id: doctor_id, hospital_id: hospital_id, start_time: "09:00:00",
+      doctor_id: doctor_id, hospital_id: hospital.id, start_time: "09:00:00",
       end_time: "17:00:00", day_of_week: [1, 2, 3, 4, 5]
     )
   end
@@ -66,13 +65,13 @@ RSpec.describe 'Items API' do
   end
 
   describe 'POST /doctors/:doctor_id/schedules' do
-    let!(:new_doctor) { create(:user, id: 99) }
     let(:valid_attributes) do
       {
-        hospital_id: hospital_id, start_time: "09:00:00", 
+        hospital_id: hospital.id, start_time: "09:00:00", 
         end_time: "17:00:00", day_of_week: [1, 2, 3, 4, 5]
       }
     end
+    let!(:new_doctor) { create(:user) }
 
     context 'when request attributes are valid' do
       before do
@@ -86,7 +85,7 @@ RSpec.describe 'Items API' do
 
     context 'when an invalid request' do
       before do
-        post "/doctors/#{new_doctor.id}/schedules", params: valid_attributes.slice(hospital_id)
+        post "/doctors/#{new_doctor.id}/schedules", params: valid_attributes.slice!(:hospital_id)
       end
 
       it 'returns status code 422' do
@@ -100,7 +99,8 @@ RSpec.describe 'Items API' do
   end
 
   describe 'PUT /doctors/:doctor_id/schedules/:id' do
-    let(:valid_attributes) { { hospital_id: hospital_id } }
+    let!(:new_hospital) { create(:hospital) }
+    let(:valid_attributes) { { hospital_id: new_hospital.id } }
 
     before { put "/doctors/#{doctor_id}/schedules/#{id}", params: valid_attributes }
 
@@ -111,7 +111,7 @@ RSpec.describe 'Items API' do
 
       it 'updates the schedule' do
         updated_schedule = DoctorSchedule.find(id)
-        expect(updated_schedule.doctor_id).to eq(doctor_id)
+        expect(updated_schedule.hospital_id).to eq(new_hospital.id)
       end
     end
 
